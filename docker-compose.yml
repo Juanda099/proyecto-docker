@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: ["./wait-for-db.sh", "python", "app.py"]
+    depends_on:
+      - db
+    ports:
+      - "8000:5000"
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test_db
+    ports:
+      - "3307:3306"
