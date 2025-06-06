@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Agenda Académica{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h2 class="mb-3 fw-light">Bienvenido a la Agenda Académica del <span class="text-info">Poli</span></h2>
+    <p class="lead text-muted">Usa la navegación superior para registrar <strong>estudiantes</strong>, <strong>materias</strong> y <strong>horarios</strong>.</p>
+    <p class="text-secondary">¡Comienza a organizar tu semestre de manera eficiente!</p>
+    <hr class="my-4" style="width: 75%; border-top: 2px solid #0dcaf0; margin: 0 auto;">
+    <p class="text-secondary">Con esta herramienta podrás organizar tu semestre de manera eficiente.</p>
+    <p class="text-secondary">Organiza tu semestre de forma rápida y sencilla con esta herramienta.</p>
+</div>
+
+<div class="d-flex justify-content-center gap-3 mt-4">
+    <a href="{{ url_for('registro.listar_estudiantes') }}" class="btn btn-outline-info rounded-pill px-4 py-2 shadow-sm" style="min-width: 180px;">
+        Ver Estudiantes Creados
+    </a>
+    <a href="{{ url_for('materias.listar_materias') }}" class="btn btn-outline-primary rounded-pill px-4 py-2 shadow-sm" style="min-width: 180px;">
+        Ver Materias Registradas
+    </a>
+    <a href="{{ url_for('horarios.listar_horarios') }}" class="btn btn-outline-success rounded-pill px-4 py-2 shadow-sm" style="min-width: 180px;">
+        Ver Horarios Registrados
+    </a>
+</div>
+
+<div class="text-center mt-5">
+    <p class="text-muted small">© 2025 Poli Agenda Web. Todos los derechos reservados.</p>
+</div>
+
+{% endblock %}

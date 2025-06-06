@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Horarios{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Registrar Horario</h2>
+
+<form method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label for="estudiante_id" class="form-label">Estudiante:</label>
+        <select name="estudiante_id" id="estudiante_id" class="form-select" required>
+            {% for est in estudiantes %}
+                <option value="{{ est[0] }}">{{ est[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="materia_id" class="form-label">Materia:</label>
+        <select name="materia_id" id="materia_id" class="form-select" required>
+            {% for mat in materias %}
+                <option value="{{ mat[0] }}">{{ mat[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="dia" class="form-label">Día:</label>
+        <input type="text" name="dia" id="dia" class="form-control" placeholder="Ejemplo: Lunes" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="hora_inicio" class="form-label">Hora inicio:</label>
+        <input type="time" name="hora_inicio" id="hora_inicio" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="hora_fin" class="form-label">Hora fin:</label>
+        <input type="time" name="hora_fin" id="hora_fin" class="form-control" required>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">💾 Guardar Horario</button>
+    </div>
+</form>
+{% endblock %}

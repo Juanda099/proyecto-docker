@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Estudiantes{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Estudiantes Registrados</h2>
+    
+    <div class="mb-3 text-end">
+        <a href="{{ url_for('registro.registro') }}" class="btn btn-success">+ Registrar nuevo estudiante</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Carrera</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for est in estudiantes %}
+                <tr>
+                    <td>{{ est[0] }}</td>
+                    <td>{{ est[1] }}</td>
+                    <td>{{ est[2] }}</td>
+                    <td>{{ est[3] }}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ url_for('registro.editar_estudiante', id=est[0]) }}" class="btn btn-sm btn-primary">✏️ Editar</a>
+                            <form action="{{ url_for('registro.eliminar_estudiante', id=est[0]) }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este estudiante?');">
+                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

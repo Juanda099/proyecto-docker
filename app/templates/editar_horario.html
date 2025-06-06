@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Horario{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Editar Horario</h2>
+
+<form method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label for="estudiante_id" class="form-label">Estudiante:</label>
+        <select name="estudiante_id" id="estudiante_id" class="form-select" required>
+            {% for est in estudiantes %}
+                <option value="{{ est[0] }}" {% if est[0] == horario[1] %}selected{% endif %}>{{ est[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="materia_id" class="form-label">Materia:</label>
+        <select name="materia_id" id="materia_id" class="form-select" required>
+            {% for mat in materias %}
+                <option value="{{ mat[0] }}" {% if mat[0] == horario[2] %}selected{% endif %}>{{ mat[1] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="dia" class="form-label">Día:</label>
+        <input type="text" name="dia" id="dia" class="form-control" value="{{ horario[3] }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="hora_inicio" class="form-label">Hora inicio:</label>
+        <input type="time" name="hora_inicio" id="hora_inicio" class="form-control" value="{{ horario[4] }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="hora_fin" class="form-label">Hora fin:</label>
+        <input type="time" name="hora_fin" id="hora_fin" class="form-control" value="{{ horario[5] }}" required>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">💾 Actualizar Horario</button>
+    </div>
+</form>
+{% endblock %}

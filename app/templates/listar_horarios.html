@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Horarios{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Horarios Registrados</h2>
+    
+    <div class="mb-3 text-end">
+        <a href="{{ url_for('horarios.registrar_horarios') }}" class="btn btn-success">+ Registrar nuevo horario</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Materia</th>
+                    <th>Día</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Fin</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horario in horarios %}
+                <tr>
+                    <td>{{ horario[0] }}</td>
+                    <td>{{ horario[1] }}</td>
+                    <td>{{ horario[2] }}</td>
+                    <td>{{ horario[3] }}</td>
+                    <td>{{ horario[4] }}</td>
+                    <td>{{ horario[5] }}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{{ url_for('horarios.editar_horario', id=horario[0]) }}" class="btn btn-sm btn-primary">✏️ Editar</a>
+                            <form action="{{ url_for('horarios.eliminar_horario', id=horario[0]) }}" method="post" onsubmit="return confirm('¿Eliminar este horario?');">
+                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

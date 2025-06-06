@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro de Materias{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Registro de Materias</h2>
+    <form method="post" action="{{ url_for('materias.registrar_materias') }}">
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre de la Materia:</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="codigo" class="form-label">Código:</label>
+            <input type="text" class="form-control" id="codigo" name="codigo" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="semestre" class="form-label">Créditos:</label>
+            <input type="number" class="form-control" id="semestre" name="semestre" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrar Materia</button>
+    </form>
+</div>
+{% endblock %}

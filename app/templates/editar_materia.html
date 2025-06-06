@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Materia{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Editar Materia</h2>
+
+<form method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" class="form-control" value="{{ materia.nombre }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="codigo" class="form-label">Código:</label>
+        <input type="text" name="codigo" id="codigo" class="form-control" value="{{ materia.codigo }}" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="semestre" class="form-label">Semestre:</label>
+        <input type="number" name="semestre" id="semestre" class="form-control" value="{{ materia.semestre }}" required>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">💾 Actualizar Materia</button>
+    </div>
+</form>
+
+<div class="mt-3">
+    <a href="{{ url_for('materias.listar_materias') }}" class="btn btn-secondary">← Volver al listado</a>
+</div>
+{% endblock %}

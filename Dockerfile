@@ -15,6 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ .
 
+COPY wait-for-db.sh .
+
 # Da permisos de ejecución al script de espera
 RUN chmod +x wait-for-db.sh
 

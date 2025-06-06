@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Estudiante{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Editar Estudiante</h2>
+
+<form method="post" class="needs-validation" novalidate>
+    <div class="mb-3">
+        <label class="form-label">Nombre:</label>
+        <input type="text" name="nombre" value="{{ estudiante[1] }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Correo:</label>
+        <input type="email" name="correo" value="{{ estudiante[2] }}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Carrera:</label>
+        <input type="text" name="carrera" value="{{ estudiante[3] }}" class="form-control" required>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">💾 Actualizar</button>
+    </div>
+</form>
+{% endblock %}
