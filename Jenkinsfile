@@ -25,7 +25,9 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sh 'docker-compose up -d'
+                sh 'docker-compose down'               // 🔥 Detiene y elimina contenedores viejos
+                sh 'docker-compose build --no-cache'  // 🔁 Fuerza rebuild de las imágenes
+                sh 'docker-compose up -d'             // 🚀 Vuelve a levantar los servicios
             }
         }
     }
