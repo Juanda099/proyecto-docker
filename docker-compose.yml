@@ -29,11 +29,14 @@ services:
       retries: 10
 
   jenkins:
-    image: jenkins/jenkins:lts
+    image: proyecto-docker-jenkins
+    container_name: proyecto-docker-jenkins-1
     ports:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock  # ⬅️ Añade esta línea
 
 volumes:
   jenkins_home:
+
