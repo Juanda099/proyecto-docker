@@ -1,4 +1,3 @@
-
 services:
   web:
     build: .
@@ -35,8 +34,7 @@ services:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock  # ⬅️ Añade esta línea
+      - /var/run/docker.sock:/var/run/docker.sock  # ⬅️ Muy importante para que Jenkins controle Docker
 
 volumes:
   jenkins_home:
-
