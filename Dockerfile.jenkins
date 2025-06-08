@@ -17,7 +17,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Crear el grupo docker si no existe y agregar usuario jenkins al grupo docker
-RUN groupadd -g 999 docker || true && \
+RUN groupadd -g 0 docker || true && \
     usermod -aG docker jenkins
 
 USER jenkins

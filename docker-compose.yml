@@ -30,11 +30,14 @@ services:
   jenkins:
     image: proyecto-docker-jenkins
     container_name: proyecto-docker-jenkins-1
+    user: "0:1000"             # ⬅️ Ejecuta Jenkins como root pero con GID=1000 (docker)
+    group_add:
+      - "1000"                 # ⬅️ Añade el grupo docker dentro del contenedor
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock  # ⬅️ Muy importante para que Jenkins controle Docker
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   jenkins_home:
