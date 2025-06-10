@@ -1,41 +1,36 @@
 pipeline {
     agent any
+
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
     }
+
     stages {
-        stage('Checkout') {
-            steps {
-                dir('proyecto-docker') {
-                    git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker'
-                    echo "✅ Checkout manual exitoso en subcarpeta"
-                }
-            }
-        }
         stage('Build') {
             steps {
-                echo "🚧 Etapa de construcción simulada"
+                echo "🚧 Simulación del proceso de construcción"
             }
         }
         stage('Test') {
             steps {
-                echo "🧪 Etapa de pruebas simulada"
+                echo "🧪 Simulación de pruebas ejecutándose correctamente"
             }
-        }            
+        }
         stage('Deploy') {
             when {
                 branch 'main'
             }
             steps {
-                echo "🚀 Etapa de despliegue simulada"
+                echo "🚀 Simulación del despliegue (solo en rama main)"
             }
         }
         stage('Verificación') {
             steps {
-                echo "🔍 Verificación simulada: Docker está funcionando correctamente (simulado)"
+                echo "🔍 Simulación de verificación del entorno"
             }
         }
     }
+
     post {
         always {
             echo '✅ Pipeline completado'
