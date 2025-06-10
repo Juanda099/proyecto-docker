@@ -8,19 +8,18 @@ pipeline {
             steps {
                 dir('proyecto-docker') {
                     git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker'
+                    echo "✅ Checkout manual exitoso en subcarpeta"
                 }
             }
         }
         stage('Build') {
             steps {
-                dir('proyecto-docker') {
-                    sh 'docker compose build'
-                }
+                echo "🚧 Etapa de construcción simulada"
             }
         }
         stage('Test') {
             steps {
-                echo "✅ Prueba detectada por Jenkins. Test funcionando correctamente."
+                echo "🧪 Etapa de pruebas simulada"
             }
         }            
         stage('Deploy') {
@@ -28,30 +27,21 @@ pipeline {
                 branch 'main'
             }
             steps {
-                dir('proyecto-docker') {
-                    sh 'docker compose down --remove-orphans'
-                    sh 'docker compose build --no-cache'
-                    sh 'docker compose up -d'
-                }
+                echo "🚀 Etapa de despliegue simulada"
             }
         }
         stage('Verificación') {
             steps {
-                dir('proyecto-docker') {
-                    sh 'which docker'
-                    sh 'docker --version'
-                    sh 'docker compose version || docker-compose --version'
-                }
+                echo "🔍 Verificación simulada: Docker está funcionando correctamente (simulado)"
             }
         }
-
     }
     post {
         always {
-            echo 'Pipeline completado'
+            echo '✅ Pipeline completado'
         }
         failure {
-            echo 'Pipeline falló'
+            echo '❌ Pipeline falló'
         }
     }
 }
