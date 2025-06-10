@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker.git'
+                git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker'
             }
         }
         stage('Build') {
@@ -16,10 +16,9 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // Aquí irían los tests
-                echo "Ejecutando pruebas..."
+                echo "✅ Prueba detectada por Jenkins. Test funcionando correctamente."
             }
-        }
+        }            
         stage('Deploy') {
             when {
                 branch 'main'
