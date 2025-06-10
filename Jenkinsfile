@@ -6,9 +6,9 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
-    }
+   // environment {
+   //     DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+   // }
 
     stages {
         stage('Build') {
