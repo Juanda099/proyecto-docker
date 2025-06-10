@@ -6,12 +6,16 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker'
+                dir('proyecto-docker') {
+                    git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker'
+                }
             }
         }
         stage('Build') {
             steps {
-                sh 'docker compose build'
+                dir('proyecto-docker') {
+                    sh 'docker compose build'
+                }
             }
         }
         stage('Test') {
@@ -24,16 +28,20 @@ pipeline {
                 branch 'main'
             }
             steps {
-                sh 'docker compose down --remove-orphans' // 🔥 Detiene y elimina contenedores viejos
-                sh 'docker compose build --no-cache'      // 🔁 Fuerza rebuild de las imágenes
-                sh 'docker compose up -d'                 // 🚀 Vuelve a levantar los servicios
+                dir('proyecto-docker') {
+                    sh 'docker compose down --remove-orphans'
+                    sh 'docker compose build --no-cache'
+                    sh 'docker compose up -d'
+                }
             }
         }
         stage('Verificación') {
             steps {
-                sh 'which docker'
-                sh 'docker --version'
-                sh 'docker compose version || docker-compose --version'
+                dir('proyecto-docker') {
+                    sh 'which docker'
+                    sh 'docker --version'
+                    sh 'docker compose version || docker-compose --version'
+                }
             }
         }
 
