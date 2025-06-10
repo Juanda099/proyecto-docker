@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    options {
+        // 🚫 Evita el checkout automático que está causando el error
+        skipDefaultCheckout(true)
+    }
+
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
     }
