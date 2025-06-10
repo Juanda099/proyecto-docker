@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     options {
-        // 🚫 Evita el checkout automático que está causando el error
+        // Evita el checkout automático que está causando el error
         skipDefaultCheckout(true)
     }
 
@@ -13,12 +13,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "🚧 Simulación del proceso de construcción"
+                echo "Simulación del proceso de construcción"
             }
         }
         stage('Test') {
             steps {
-                echo "🧪 Simulación de pruebas ejecutándose correctamente"
+                echo "Simulación de pruebas ejecutándose correctamente"
             }
         }
         stage('Deploy') {
@@ -26,12 +26,12 @@ pipeline {
                 branch 'main'
             }
             steps {
-                echo "🚀 Simulación del despliegue (solo en rama main)"
+                echo "Simulación del despliegue (solo en rama main)"
             }
         }
         stage('Verificación') {
             steps {
-                echo "🔍 Simulación de verificación del entorno"
+                echo "Simulación de verificación del entorno"
             }
         }
     }
