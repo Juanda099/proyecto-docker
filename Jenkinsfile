@@ -5,10 +5,6 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    //environment {
-        // DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Si vas a usar Docker Hub después
-    //}
-
     stages {
         stage('Checkout') {
             steps {
@@ -30,8 +26,14 @@ pipeline {
         }
 
         stage('Deploy') {
+            // when {
+            //     branch 'main'
+            // }
             steps {
-                echo "🚀 Levantando servicios con docker compose up -d"
+                echo "🛑 Deteniendo servicios antiguos"
+                sh 'docker compose down --remove-orphans'
+
+                echo "🚀 Levantando servicios actualizados"
                 sh 'docker compose up -d'
             }
         }
