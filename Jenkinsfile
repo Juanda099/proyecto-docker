@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    // ❌ Quitar skipDefaultCheckout
-    // options {
-    //     skipDefaultCheckout(true)
-    // }
+    // ❌ No pongas skipDefaultCheckout(true)
 
     stages {
         stage('Checkout') {
