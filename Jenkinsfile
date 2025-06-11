@@ -11,9 +11,18 @@ pipeline {
    // }
 
     stages {
+
+        stage('checkout'){
+            steps {
+                // Simulación de un checkout manual
+                echo "Simulación del checkout del repositorio"
+                checkout scm
+            }
+        }
         stage('Build') {
             steps {
                 echo "Simulación del proceso de construcción"
+                sh 'docker compose build'
             }
         }
         stage('Test') {
@@ -23,15 +32,20 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                branch 'main'
+                branch 'main' 
             }
             steps {
                 echo "Simulación del despliegue (solo en rama main)"
+                sh 'docker compose up -d'
             }
         }
         stage('Verificación') {
             steps {
-                echo "Simulación de verificación del entorno"
+                echo "🔍 Verificando instalación de Docker"
+                sh 'which docker'
+                sh 'docker --version'
+                sh 'docker compose version || docker-compose --version'
+                echo "✅ Verificación de entorno Docker completa"
             }
         }
     }
