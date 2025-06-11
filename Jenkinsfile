@@ -1,14 +1,16 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(true)
-    }
+    // ✅ Eliminamos skipDefaultCheckout para permitir el checkout completo
+    // options {
+    //     skipDefaultCheckout(true)
+    // }
 
     stages {
         stage('Checkout') {
             steps {
-                echo "✅ Código ya fue descargado automáticamente por Jenkins"
+                // ✅ Forzamos a Jenkins a hacer checkout del repositorio completo
+                checkout scm
             }
         }
 
@@ -26,10 +28,6 @@ pipeline {
         }
 
         stage('Deploy') {
-            
-            // when {
-            //     branch 'main'
-            // }
             steps {
                 echo "🛑 Deteniendo servicios antiguos"
                 sh 'docker compose -f docker-compose.app.yml down --remove-orphans'
