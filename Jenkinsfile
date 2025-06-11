@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    // ✅ Eliminamos skipDefaultCheckout para permitir el checkout completo
+    // ❌ NO usamos skipDefaultCheckout aquí
     // options {
     //     skipDefaultCheckout(true)
     // }
@@ -9,8 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // ✅ Forzamos a Jenkins a hacer checkout del repositorio completo
-                checkout scm
+                echo "✅ Código ya fue descargado automáticamente por Jenkins"
             }
         }
 
