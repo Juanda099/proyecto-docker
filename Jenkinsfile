@@ -15,7 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "🚧 Ejecutando docker compose build..."
-                sh 'docker compose build'
+                sh 'docker compose -f docker-compose.app.yml build'
             }
         }
 
@@ -26,15 +26,16 @@ pipeline {
         }
 
         stage('Deploy') {
+            
             // when {
             //     branch 'main'
             // }
             steps {
                 echo "🛑 Deteniendo servicios antiguos"
-                sh 'docker compose down --remove-orphans'
+                sh 'docker compose -f docker-compose.app.yml down --remove-orphans'
 
                 echo "🚀 Levantando servicios actualizados"
-                sh 'docker compose up -d'
+                sh 'docker compose -f docker-compose.app.yml up -d'
             }
         }
 
