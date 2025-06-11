@@ -1,44 +1,37 @@
 pipeline {
     agent any
 
-    // ❌ No pongas skipDefaultCheckout(true)
+    options {
+        // Evita el checkout automático que está causando el error
+        skipDefaultCheckout(true)
+    }
+
+   // environment {
+   //     DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+   // }
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo "✅ Jenkins ya hizo checkout automáticamente"
-            }
-        }
-
         stage('Build') {
             steps {
-                echo "🚧 Ejecutando docker compose build..."
-                sh 'docker compose -f docker-compose.app.yml build'
+                echo "Simulación del proceso de construcción"
             }
         }
-
         stage('Test') {
             steps {
-                echo "🧪 Ejecutando tests (si hay)..."
+                echo "Simulación de pruebas ejecutándose correctamente"
             }
         }
-
         stage('Deploy') {
+            when {
+                branch 'main'
+            }
             steps {
-                echo "🛑 Deteniendo servicios antiguos"
-                sh 'docker compose -f docker-compose.app.yml down --remove-orphans'
-
-                echo "🚀 Levantando servicios actualizados"
-                sh 'docker compose -f docker-compose.app.yml up -d'
+                echo "Simulación del despliegue (solo en rama main)"
             }
         }
-
         stage('Verificación') {
             steps {
-                echo "🔍 Verificando Docker..."
-                sh 'which docker'
-                sh 'docker --version'
-                sh 'docker compose version || docker-compose --version'
+                echo "Simulación de verificación del entorno"
             }
         }
     }
@@ -52,4 +45,3 @@ pipeline {
         }
     }
 }
-

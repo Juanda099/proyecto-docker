@@ -26,3 +26,18 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+
+  jenkins:
+    image: proyecto-docker-jenkins
+    container_name: proyecto-docker-jenkins-1
+    user: "0:1000"             # ⬅️ Ejecuta Jenkins como root pero con GID=1000 (docker)
+    group_add:
+      - "1000"                 # ⬅️ Añade el grupo docker dentro del contenedor
+    ports:
+      - "8081:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  jenkins_home:
