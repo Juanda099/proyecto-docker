@@ -1,15 +1,15 @@
 pipeline {
     agent any
 
-    // ❌ NO usamos skipDefaultCheckout aquí
-    // options {
-    //     skipDefaultCheckout(true)
-    // }
+    options {
+        skipDefaultCheckout(true)
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                echo "✅ Código ya fue descargado automáticamente por Jenkins"
+                echo '🔄 Haciendo checkout manual del repositorio...'
+                git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker.git'
             }
         }
 
@@ -22,7 +22,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo "🧪 Aquí podrías ejecutar tests de tu app si existen."
+                echo "🧪 Ejecutando tests (si hay)..."
             }
         }
 
@@ -38,11 +38,10 @@ pipeline {
 
         stage('Verificación') {
             steps {
-                echo "🔍 Verificando instalación de Docker"
+                echo "🔍 Verificando Docker..."
                 sh 'which docker'
                 sh 'docker --version'
                 sh 'docker compose version || docker-compose --version'
-                echo "✅ Verificación de entorno Docker completa"
             }
         }
     }
