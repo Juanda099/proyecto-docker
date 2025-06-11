@@ -1,15 +1,15 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(true)
-    }
+    // ❌ Quitar skipDefaultCheckout
+    // options {
+    //     skipDefaultCheckout(true)
+    // }
 
     stages {
         stage('Checkout') {
             steps {
-                echo '🔄 Haciendo checkout manual del repositorio...'
-                git branch: 'main', url: 'https://github.com/Juanda099/proyecto-docker.git'
+                echo "✅ Jenkins ya hizo checkout automáticamente"
             }
         }
 
@@ -55,3 +55,4 @@ pipeline {
         }
     }
 }
+
