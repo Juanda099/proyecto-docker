@@ -5,9 +5,9 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    environment {
+    //environment {
         // DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Si vas a usar Docker Hub después
-    }
+    //}
 
     stages {
         stage('Checkout') {
