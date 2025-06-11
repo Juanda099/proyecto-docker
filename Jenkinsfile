@@ -30,9 +30,6 @@ pipeline {
         }
 
         stage('Deploy') {
-            when {
-                branch 'main'
-            }
             steps {
                 echo "🚀 Levantando servicios con docker compose up -d"
                 sh 'docker compose up -d'
