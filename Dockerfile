@@ -21,3 +21,4 @@ COPY wait-for-db.sh .
 RUN chmod +x wait-for-db.sh
 
 # Comando por defecto se define en docker-compose.yml (con el script)
+
