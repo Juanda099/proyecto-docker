@@ -30,5 +30,4 @@ jobs:
         run: docker compose build web
 
       - name: Run Tests
-        # run: docker compose run web python -m pytest tests/
-        run: echo "Sin pruebas en esta ejecución"
+        run: docker compose run web pytest
