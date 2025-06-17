@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from routes import horarios, materias, registro
-
+# Prueba rama fredyrod
 def create_app():
     app = Flask(__name__)
     
