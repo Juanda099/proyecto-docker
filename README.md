@@ -1,7 +1,8 @@
 # 🐳 Proyecto Flask + MySQL con Docker
 
-## 🔹 Nombre del estudiante:
+## 🔹 Nombre de los estudiantes:
 **Juan David**
+**Fredy Rodriguez**
 
 ## 🔹 Nombre del proyecto:
 **Aplicación Flask con base de datos MySQL usando Docker**
