@@ -16,8 +16,19 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // Aquí irían los tests
+                // Aquí inclimos los tests unitarios
                 echo "Ejecutando pruebas..."
+          
+                // 🔍 Análisis SonarCloud
+                  {
+                    sh """
+                         sonar-scanner \
+                        -Dsonar.organization=FredyRod \
+                        -Dsonar.projectKey=fredyrod_sonar-fredyrod \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=1e4fc733fc38d86178d729f0ba08088039b13727
+                    """
             }
         }
         stage('Deploy') {
