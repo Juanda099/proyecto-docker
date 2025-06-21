@@ -1,106 +1,165 @@
 # 🐳 Proyecto Flask + MySQL con Docker
 
-## 🔹 Nombre del estudiante:
-**Juan David**
-
-## 🔹 Nombre del proyecto:
-**Aplicación Flask con base de datos MySQL usando Docker**
+## 🔹 Autores
+**Juan David Ramírez Calderón**
+**Fredy Rodríguez**
+**Brayan Salguero**
 
 ## 🔹 Descripción general
 
-Durante esta semana se implementó un proyecto web utilizando el microframework **Flask** junto con una base de datos **MySQL**. Todo el entorno fue montado y gestionado mediante **Docker**, permitiendo ejecutar los servicios en contenedores que se comunican entre sí a través de una red virtual definida por `docker-compose`.
+Este proyecto implementa una aplicación web desarrollada con **Flask** (Python) que interactúa con una base de datos **MySQL**. Todo el entorno se ejecuta en contenedores Docker, orquestados mediante **Docker Compose**, lo que facilita el desarrollo, pruebas, despliegue y la integración continua.
+
+---
 
 ## 🔹 Objetivo
 
-Emplear Docker como herramienta de integración continua para construir dos contenedores:
-- Uno que contenga la aplicación web desarrollada con Flask.
-- Otro que contenga la base de datos MySQL.
+- Demostrar cómo construir y conectar una aplicación Flask y una base de datos MySQL usando Docker.
+- Implementar prácticas de **Integración Continua/Entrega Continua (CI/CD)** con Jenkins y GitHub Actions.
+
+---
 
 ## 🔹 Tecnologías utilizadas
 
 | Herramienta/Tecnología | Versión/Descripción                  |
 |------------------------|--------------------------------------|
-| Python                 | 3.x                                  |
+| Python                 | 3.10                                 |
 | Flask                  | Microframework para aplicaciones web |
-| MySQL                  | Motor de base de datos relacional    |
+| MySQL                  | 8.0                                  |
 | Docker                 | Contenedores                         |
 | Docker Compose         | Orquestación de contenedores         |
-| Git/GitHub             | Control de versiones                 |
+| Jenkins                | Automatización CI/CD                 |
+| GitHub Actions         | Automatización CI/CD                 |
+| pytest/pytest-cov      | Pruebas y cobertura                  |
+
+---
 
 ## 🔹 Estructura del proyecto
 
+```
 proyecto-docker/
 ├── app/
-│ ├── app.py
-│ └── requirements.txt
-├── docker-compose.yml
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── ... (otros módulos, rutas, modelos)
+├── tests/
+│   ├── test_main.py
+│   └── test_example.py
 ├── Dockerfile
+├── docker-compose.yml
+├── wait-for-db.sh
+├── Jenkinsfile
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 └── README.md
+```
 
+---
 
 ## 🔹 Contenedores definidos
 
 1. **web** – Contenedor para la aplicación Flask.
-   - Construido con `Dockerfile`.
-   - Expone el puerto `5000`.
+   - Construido con el `Dockerfile` del proyecto.
+   - Expone el puerto `5000` (mapeado a `8000` en el host).
+   - Espera a que la base de datos esté lista antes de iniciar.
+   - Usa variables de entorno para conectarse a MySQL.
 
 2. **db** – Contenedor con imagen oficial de MySQL.
-   - Usa volumen para persistencia de datos.
-   - Expone el puerto `3306`.
+   - Configurado con usuario, contraseña y base de datos inicial.
+   - Expone el puerto `3306` (mapeado a `3311` en el host).
+   - Incluye healthcheck para asegurar que el servicio esté listo antes de que la app intente conectarse.
 
-Ambos contenedores se gestionan desde `docker-compose.yml` y están conectados a través de una red virtual interna de Docker.
+3. **jenkins** – Contenedor para Jenkins (CI/CD).
+   - Imagen personalizada.
+   - Expone el puerto `8080` (mapeado a `8081` en el host).
+   - Monta volúmenes para persistencia y acceso al socket Docker.
+
+---
 
 ## 🔹 Comunicación entre contenedores
 
-- Se usó el nombre del servicio `db` como host en la conexión MySQL dentro de Flask (`host='db'`).
-- Docker Compose se encarga de la red interna que permite esta comunicación sin necesidad de configurar IPs.
+- Los servicios se comunican a través de una red interna creada por Docker Compose.
+- La aplicación Flask usa el nombre del servicio `db` como host para conectarse a MySQL (`DB_HOST=db`).
+
+---
 
 ## 🔹 Comando para levantar el entorno
 
 ```bash
 docker-compose up --build
+```
 
-✅ Conexión exitosa con MySQL. Iniciando aplicación Flask...
+- Accede a la aplicación en: [http://localhost:8000](http://localhost:8000)
+- Jenkins disponible en: [http://localhost:8081](http://localhost:8081)
+
+---
+
+## 🔹 Integración Continua/Entrega Continua (CI/CD)
+
+### Jenkins
+
+- El pipeline definido en `Jenkinsfile` automatiza:
+  - Descarga del código (`Checkout`)
+  - Construcción de imágenes Docker (`Build`)
+  - Ejecución de pruebas unitarias y de integración con cobertura (`Run Tests with Coverage`)
+  - Archivado de reportes de cobertura (`Archive Coverage Report`)
+  - Simulación de despliegue en rama `main` (`Deploy`)
+  - Verificación post-despliegue (`Verificación`)
+- Usa Docker Compose para levantar los servicios y ejecutar pruebas en un entorno idéntico al de producción.
+
+### GitHub Actions
+
+- Workflow definido en `.github/workflows/ci.yml`:
+  - Se ejecuta en cada push a la rama `main`.
+  - Levanta un servicio MySQL y ejecuta pruebas en el contenedor Flask usando Docker Compose.
+  - Genera reportes de cobertura.
+
+---
+
+## 🔹 Pruebas
+
+- Las pruebas están en la carpeta `tests/`.
+- Se ejecutan automáticamente en los pipelines de CI/CD.
+- Ejemplo de ejecución manual:
+  ```bash
+  docker compose run web pytest --cov=main --cov-report=term-missing tests
+  ```
+
+---
+
+## 🔹 Scripts y utilidades
+
+- **wait-for-db.sh:**  
+  Script que espera a que MySQL esté listo antes de iniciar la aplicación Flask y crear las tablas necesarias.
+
+---
+
+## 🔹 Buenas prácticas y recomendaciones
+
+- Usa variables de entorno para credenciales y configuración sensible.
+- Agrega un volumen para persistencia de datos de MySQL si se requiere mantener la información tras reinicios.
+- Amplía la cobertura de pruebas y el manejo de errores en la aplicación.
+- No expongas contraseñas en archivos de configuración en producción.
+
+---
+
+## 🔹 Enlaces útiles
+
+- [Repositorio en GitHub](https://github.com/Juanda099/proyecto-docker)
+
+---
+
+## 🔹 Ejemplo de uso
+
+```bash
+# Levantar el entorno completo
+docker-compose up --build
+
+# Acceder a la app
 http://localhost:8000
 
+# Acceder a Jenkins
+http://localhost:8081
+```
 
-📎 https://github.com/Juanda099/proyecto-docker
-
-# Prueba de webhook con Jenkins y ngrok
-# Prueba #2 credenciales. 
-# Prueba de conexión, GitHub y Jenkins. 
-# Prueba de conexión, GitHub, y Jenkins, Wedhooks
-# Nueva Prueba. 
-# Nuevo push, prueba en github, y jenkins
-# Nuevo push, prueba en github, y jenkins, falla en el puerto, 8000, ahora en 8081
-# Nueva prueba
-# Nueva prueba 2
-# Nueva prueba 3
-# Nueva prueba 4
-# Nueva pueba 5
-# Nueva prueba 6
-# Nueva prueba 7
-# Nueva prueba 8
-# Nueva prueba 9
-# Nueva prueba 10
-# Nueva prueba 11
-# Nueva prueba 12
-# Nueva prueba 13
-# Nueva prueba 14
-# Nueva prueba 15
-# Nueva prueba 16
-# Nueva prueba 17
-# Nueva prueba 18
-# Nueva prueba 19
-# Nueva prueba 20
-echo "Test de Jenkins" >> test.txt
-# Nueva prueba de Jenkins 
-# Nueva prueba de integración
-# Prueba correción docker-compose.app.yml
-# Prueba
-# Prueba
-# Prueba 1
-#prueba
-# Pueba #1
-# Prueba 27
-# PRUEBA 3
+---
