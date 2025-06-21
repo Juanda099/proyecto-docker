@@ -16,9 +16,26 @@ pipeline {
                 echo "Simulación del proceso de construcción"
             }
         }
-        stage('Test') {
+        stage('Run Tests with Coverage') {
             steps {
-                echo "Simulación de pruebas ejecutándose correctamente"
+                sh '''
+                    docker compose down --remove-orphans || true
+                    docker compose up -d db
+                    docker compose run --rm web pytest --cov=main --cov-report=html tests
+                '''
+            }
+        }
+
+        stage('Publish Coverage Report') {
+            steps {
+                publishHTML (target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: "${COVERAGE_DIR}",
+                    reportFiles: 'index.html',
+                    reportName: 'Coverage Report'
+                ])
             }
         }
         stage('Deploy') {
