@@ -11,60 +11,62 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Build') {
             steps {
                 echo "Simulación del proceso de construcción"
             }
         }
-    stage('Run Tests with Coverage') {
-        steps {
-            script {
-            // Detener cualquier contenedor que esté usando el puerto 3311
-            sh '''
-                echo "🛠️ Verificando si el puerto 3311 está ocupado..."
-                container_id=$(docker ps -q --filter "publish=3311")
-                if [ -n "$container_id" ]; then
-                    echo "⚠️ Contenedor usando el puerto 3311 detectado: $container_id. Deteniendo..."
-                    docker stop $container_id || true
-                    docker rm $container_id || true
-                else
-                    echo "✅ Puerto 3311 libre"
-                fi
-            '''                
-                // Limpiar y construir
-                sh 'docker compose down --remove-orphans || true'
-                sh 'docker compose build --no-cache web'
-                sh 'docker compose up -d db'
-                
-                // Crear directorio para cobertura
-                sh "mkdir -p ${WORKSPACE}/${COVERAGE_DIR}"
-                
-                // Ejecutar pruebas en contenedor temporal
-                def containerId = sh(script: 'docker compose run -d --rm web sleep infinity', returnStdout: true).trim()
-                
-                // Ejecutar pytest dentro del contenedor
-                sh """
-                    docker exec ${containerId} sh -c '
-                        pytest --cov=main --cov-report=html:/tmp/htmlcov tests
-                    '
-                """
-                
-                // Copiar reportes desde contenedor a host
-                sh """
-                    docker cp ${containerId}:/tmp/htmlcov ${WORKSPACE}/${COVERAGE_DIR}
-                    docker stop ${containerId}
-                """
-                
-                // Verificar contenido copiado
-                echo "=== Verificación de archivos en ${WORKSPACE}/${COVERAGE_DIR} ==="
-                sh "ls -la ${WORKSPACE}/${COVERAGE_DIR} || true"
-                sh "ls -R ${WORKSPACE}/${COVERAGE_DIR} || true"
-                
-                // Ajustar permisos
-                sh "chmod -R a+rX ${WORKSPACE}/${COVERAGE_DIR}"
+
+        stage('Run Tests with Coverage') {
+            steps {
+                script {
+                    // Verificar puerto 3311
+                    sh '''
+                        echo "🛠️ Verificando si el puerto 3311 está ocupado..."
+                        container_id=$(docker ps -q --filter "publish=3311")
+                        if [ -n "$container_id" ]; then
+                            echo "⚠️ Contenedor usando el puerto 3311 detectado: $container_id. Deteniendo..."
+                            docker stop $container_id || true
+                            docker rm $container_id || true
+                        else
+                            echo "✅ Puerto 3311 libre"
+                        fi
+                    '''                
+
+                    // Limpiar y construir
+                    sh 'docker compose down --remove-orphans || true'
+                    sh 'docker compose build --no-cache web'
+                    sh 'docker compose up -d db'
+
+                    // Crear directorio para cobertura
+                    sh "mkdir -p ${WORKSPACE}/${COVERAGE_DIR}"
+
+                    // Ejecutar pruebas en contenedor temporal
+                    def containerId = sh(script: 'docker compose run -d --rm web sleep infinity', returnStdout: true).trim()
+
+                    // Ejecutar pytest con cobertura dentro del contenedor
+                    sh """
+                        docker exec ${containerId} sh -c '
+                            pytest --cov=main --cov-report=html:/tmp/htmlcov tests
+                        '
+                    """
+
+                    // Copiar reporte HTML de cobertura al host
+                    sh """
+                        docker cp ${containerId}:/tmp/htmlcov ${WORKSPACE}/${COVERAGE_DIR}
+                        docker stop ${containerId}
+                    """
+
+                    // Verificación y permisos
+                    echo "=== Verificación de archivos en ${WORKSPACE}/${COVERAGE_DIR} ==="
+                    sh "ls -la ${WORKSPACE}/${COVERAGE_DIR} || true"
+                    sh "ls -R ${WORKSPACE}/${COVERAGE_DIR} || true"
+                    sh "chmod -R a+rX ${WORKSPACE}/${COVERAGE_DIR}"
+                }
             }
         }
-    }
+
         stage('Archive Coverage Report') {
             steps {
                 sh """
@@ -74,8 +76,19 @@ pipeline {
                 """
                 archiveArtifacts artifacts: "${COVERAGE_DIR}/**", allowEmptyArchive: false
                 echo "Reporte de cobertura archivado en ${WORKSPACE}/${COVERAGE_DIR}/"
+
+                // Publicar el reporte HTML de cobertura en Jenkins
+                publishHTML(target: [
+                    reportDir: "${COVERAGE_DIR}/htmlcov",
+                    reportFiles: 'index.html',
+                    reportName: 'Reporte de Cobertura',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+                ])
             }
         }
+
         stage('Deploy') {
             when {
                 branch 'main'
@@ -84,6 +97,7 @@ pipeline {
                 echo "Simulación del despliegue (solo en rama main)"
             }
         }
+
         stage('Verificación') {
             steps {
                 echo "Simulación de verificación del entorno"
