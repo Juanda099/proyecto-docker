@@ -15,6 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Luego copiar SOLO el contenido de app/ (no toda la raíz)
 COPY app/ .
 
+# Copiar la carpeta de tests desde la raíz del proyecto
+COPY tests/ ./tests
+
 # Copiar el script de espera que sí está en la raíz del proyecto
 COPY wait-for-db.sh .
 
