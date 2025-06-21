@@ -18,6 +18,7 @@ pipeline {
         }
         stage('Run Tests with Coverage') {
             steps {
+                dir('proyecto-docker') {
                 sh '''
                     docker compose down --remove-orphans || true
                     docker compose up -d db
