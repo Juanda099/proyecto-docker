@@ -24,13 +24,14 @@ pipeline {
                 docker compose up -d db
                 mkdir -p "${WORKSPACE}/${COVERAGE_DIR}"
 
-                # Ejecutar pytest, generar cobertura en /tmp/htmlcov dentro del contenedor
+                # Ejecutar pytest y generar cobertura
                 docker compose run --rm \
                     -v "${WORKSPACE}/${COVERAGE_DIR}:/app/${COVERAGE_DIR}" \
-                    --entrypoint="" web sh -c "
+                    --entrypoint="" web sh -c '
+                        mkdir -p /app/${COVERAGE_DIR} && \
                         pytest --cov=main --cov-report=html:/tmp/htmlcov tests && \
                         cp -r /tmp/htmlcov/* /app/${COVERAGE_DIR}/
-                    "
+                    '
 
                 echo "=== Contenido de ${WORKSPACE}/${COVERAGE_DIR} tras pytest ==="
                 ls -la "${WORKSPACE}/${COVERAGE_DIR}" || true
