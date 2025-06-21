@@ -25,20 +25,19 @@ pipeline {
                     # Reconstruir la imagen web desde cero
                     docker compose build --no-cache web
 
-                    # Levantar sólo la base de datos
+                    # Levantar solo la base de datos
                     docker compose up -d db
 
                     # Crear carpeta htmlcov en el workspace
                     mkdir -p "${WORKSPACE}/${COVERAGE_DIR}"
 
-                    # Ejecutar pytest dentro del contenedor, montando la carpeta del host:
-                    # Usamos --entrypoint="" para ejecutar directamente 'pytest'.
+                    # Ejecutar pytest con salida HTML explícita a /app/htmlcov
                     docker compose run --rm \
                         -v "${WORKSPACE}/${COVERAGE_DIR}:/app/${COVERAGE_DIR}" \
                         --entrypoint="" web \
-                        pytest --cov=main --cov-report=html tests
+                        pytest --cov=main --cov-report=html:/app/${COVERAGE_DIR} tests
 
-                    # Diagnóstico: listar contenido en el host
+                    # Diagnóstico: listar contenido generado
                     echo "=== Contenido de ${WORKSPACE}/${COVERAGE_DIR} tras pytest ==="
                     ls -la "${WORKSPACE}/${COVERAGE_DIR}" || true
                     ls -R "${WORKSPACE}/${COVERAGE_DIR}" || true
@@ -50,13 +49,11 @@ pipeline {
         }
         stage('Archive Coverage Report') {
             steps {
-                // Antes de archivar, revisamos de nuevo
                 sh """
                     echo "=== Verificando htmlcov justo antes de archiveArtifacts ==="
                     ls -la "${WORKSPACE}/${COVERAGE_DIR}" || true
                     ls -R "${WORKSPACE}/${COVERAGE_DIR}" || true
                 """
-                // Archivar los HTML de cobertura
                 archiveArtifacts artifacts: "${COVERAGE_DIR}/**", allowEmptyArchive: false
                 echo "Reporte de cobertura archivado en ${WORKSPACE}/${COVERAGE_DIR}/"
             }
@@ -78,7 +75,6 @@ pipeline {
 
     post {
         always {
-            // Bajar contenedores
             sh 'docker compose down --remove-orphans || true'
             echo '✅ Pipeline completado'
         }
