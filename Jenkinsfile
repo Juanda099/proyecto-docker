@@ -18,32 +18,42 @@ pipeline {
         }
         stage('Run Tests with Coverage') {
             steps {
-                // Usamos comillas dobles para el bloque sh y escapamos $PWD si fuera necesario
-                sh """
-                    # Bajar contenedores previos
+                sh '''
+                    # Bajar contenedores previos si existieran
                     docker compose down --remove-orphans || true
 
                     # Forzar reconstrucción de la imagen web
                     docker compose build --no-cache web
 
-                    # Levantar solo la base de datos
+                    # Levantar sólo la base de datos
                     docker compose up -d db
 
                     # Crear carpeta en workspace para montar htmlcov
                     mkdir -p htmlcov
 
                     # Ejecutar pytest dentro del contenedor, montando htmlcov en host
-                    # NOTA: Es crucial que --entrypoint='' se pase literalmente al shell.
-                    docker compose run --rm -v "\$PWD/htmlcov:/app/htmlcov" --entrypoint='' web pytest --cov=main --cov-report=html tests
+                    # IMPORTANTE: usar --entrypoint="" para que Docker ejecute directamente 'pytest'
+                    docker compose run --rm -v "$PWD/htmlcov:/app/htmlcov" --entrypoint="" web pytest --cov=main --cov-report=html tests
 
-                    # Ajustar permisos en workspace/htmlcov para garantizar lectura
+                    # Diagnóstico: listar contenido de htmlcov en host
+                    echo "=== Contenido de htmlcov tras pytest ==="
+                    ls -la htmlcov || true
+                    ls -R htmlcov || true
+
+                    # Ajustar permisos para que Jenkins pueda leer/copiar los archivos
                     chmod -R a+rX htmlcov
-                """
+                '''
             }
         }
         stage('Archive Coverage Report') {
             steps {
-                // Archivamos los archivos HTML de cobertura para descarga desde Jenkins
+                // Verificamos nuevamente antes de archivar
+                sh '''
+                    echo "=== Verificando htmlcov justo antes de archiveArtifacts ==="
+                    ls -la htmlcov || true
+                    ls -R htmlcov || true
+                '''
+                // Archivar los archivos HTML de cobertura
                 archiveArtifacts artifacts: "${COVERAGE_DIR}/**", allowEmptyArchive: false
                 echo "Reporte de cobertura archivado en ${WORKSPACE}/${COVERAGE_DIR}/"
             }
