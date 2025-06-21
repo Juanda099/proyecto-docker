@@ -18,7 +18,8 @@ pipeline {
         }
         stage('Run Tests with Coverage') {
             steps {
-                sh '''
+                // Usamos comillas dobles para el bloque sh y escapamos $PWD si fuera necesario
+                sh """
                     # Bajar contenedores previos
                     docker compose down --remove-orphans || true
 
@@ -28,30 +29,23 @@ pipeline {
                     # Levantar solo la base de datos
                     docker compose up -d db
 
-                    # Crear carpeta en workspace para montar el htmlcov
+                    # Crear carpeta en workspace para montar htmlcov
                     mkdir -p htmlcov
 
                     # Ejecutar pytest dentro del contenedor, montando htmlcov en host
-                    docker compose run --rm -v $PWD/htmlcov:/app/htmlcov --entrypoint='' web pytest --cov=main --cov-report=html tests
+                    # NOTA: Es crucial que --entrypoint='' se pase literalmente al shell.
+                    docker compose run --rm -v "\$PWD/htmlcov:/app/htmlcov" --entrypoint='' web pytest --cov=main --cov-report=html tests
 
-                    # Ajustar permisos para que Jenkins pueda leer/copiar los archivos
+                    # Ajustar permisos en workspace/htmlcov para garantizar lectura
                     chmod -R a+rX htmlcov
-                '''
+                """
             }
         }
-        stage('Publish Coverage Report') {
+        stage('Archive Coverage Report') {
             steps {
-                // Asegúrate de que HTML Publisher Plugin esté instalado en Jenkins
-                publishHTML (target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: "${COVERAGE_DIR}",
-                    reportFiles: 'index.html',
-                    reportName: 'Coverage Report'
-                ])
-                // Si no tuvieras el plugin HTML Publisher, puedes en su lugar archivar:
-                // archiveArtifacts artifacts: "${COVERAGE_DIR}/**", allowEmptyArchive: false
+                // Archivamos los archivos HTML de cobertura para descarga desde Jenkins
+                archiveArtifacts artifacts: "${COVERAGE_DIR}/**", allowEmptyArchive: false
+                echo "Reporte de cobertura archivado en ${WORKSPACE}/${COVERAGE_DIR}/"
             }
         }
         stage('Deploy') {
