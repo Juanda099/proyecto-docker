@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        // Evita el checkout automático que está causando el error
-        skipDefaultCheckout(true)
-    }
 
     environment {
         COVERAGE_DIR = 'htmlcov'
