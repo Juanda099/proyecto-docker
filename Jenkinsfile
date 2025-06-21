@@ -19,11 +19,23 @@ pipeline {
         stage('Run Tests with Coverage') {
             steps {
                 sh '''
+                    # Bajar contenedores previos
                     docker compose down --remove-orphans || true
+
+                    # Forzar reconstrucción de la imagen web
                     docker compose build --no-cache web
+
+                    # Levantar solo la base de datos
                     docker compose up -d db
+
+                    # Crear carpeta en workspace para montar el htmlcov
                     mkdir -p htmlcov
+
+                    # Ejecutar pytest dentro del contenedor, montando htmlcov en host
                     docker compose run --rm -v $PWD/htmlcov:/app/htmlcov --entrypoint='' web pytest --cov=main --cov-report=html tests
+
+                    # Ajustar permisos para que Jenkins pueda leer/copiar los archivos
+                    chmod -R a+rX htmlcov
                 '''
             }
         }
@@ -38,6 +50,8 @@ pipeline {
                     reportFiles: 'index.html',
                     reportName: 'Coverage Report'
                 ])
+                // Si no tuvieras el plugin HTML Publisher, puedes en su lugar archivar:
+                // archiveArtifacts artifacts: "${COVERAGE_DIR}/**", allowEmptyArchive: false
             }
         }
         stage('Deploy') {
@@ -57,6 +71,7 @@ pipeline {
 
     post {
         always {
+            // Bajar contenedores al finalizar
             sh 'docker compose down --remove-orphans || true'
             echo '✅ Pipeline completado'
         }
