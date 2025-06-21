@@ -1,7 +1,8 @@
 services:
   web:
     build: .
-    command: ["./wait-for-db.sh", "python", "main.py"]
+    entrypoint: ["./wait-for-db.sh"]
+    command: ["python", "main.py"]
     environment:
       FLASK_ENV: development
       DB_HOST: db
