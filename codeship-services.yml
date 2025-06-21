@@ -1,0 +1,23 @@
+db:
+  image: mysql:8.0
+  environment:
+    MYSQL_ROOT_PASSWORD: password
+    MYSQL_DATABASE: test_db
+  healthcheck:
+    test: ["CMD", "mysqladmin", "ping","-h","localhost"]
+    interval: 5s
+    timeout: 10s
+    retries: 10
+
+web:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  depends_on:
+    - db
+  environment:
+    FLASK_ENV: testing
+    DB_HOST: db
+    DB_NAME: test_db
+    DB_USER: root
+    DB_PASSWORD: password
