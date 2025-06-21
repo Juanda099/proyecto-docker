@@ -6,10 +6,6 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-    // environment {
-    //     DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
-    // }
-
     environment {
         COVERAGE_DIR = 'htmlcov'
     }
@@ -23,13 +19,11 @@ pipeline {
 
         stage('Run Tests with Coverage') {
             steps {
-                dir('proyecto-docker') {
-                    sh '''
-                        docker compose down --remove-orphans || true
-                        docker compose up -d db
-                        docker compose run --rm web pytest --cov=main --cov-report=html tests
-                    '''
-                }
+                sh '''
+                    docker compose down --remove-orphans || true
+                    docker compose up -d db
+                    docker compose run --rm web pytest --cov=main --cov-report=html tests
+                '''
             }
         }
 
