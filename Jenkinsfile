@@ -1,33 +1,35 @@
 pipeline {
     agent any
 
-
     environment {
         COVERAGE_DIR = 'htmlcov'
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Build') {
             steps {
                 echo "Simulación del proceso de construcción"
             }
         }
-
         stage('Run Tests with Coverage') {
             steps {
                 sh '''
                     docker compose down --remove-orphans || true
                     docker compose build --no-cache web
                     docker compose up -d db
-                    docker compose run --rm --entrypoint="" web pytest --cov=main --cov-report=html tests
+                    mkdir -p htmlcov
+                    docker compose run --rm -v $PWD/htmlcov:/app/htmlcov --entrypoint='' web pytest --cov=main --cov-report=html tests
                 '''
-
             }
         }
-
-
         stage('Publish Coverage Report') {
             steps {
+                // Asegúrate de que HTML Publisher Plugin esté instalado en Jenkins
                 publishHTML (target: [
                     allowMissing: false,
                     alwaysLinkToLastBuild: true,
@@ -38,7 +40,6 @@ pipeline {
                 ])
             }
         }
-
         stage('Deploy') {
             when {
                 branch 'main'
@@ -47,7 +48,6 @@ pipeline {
                 echo "Simulación del despliegue (solo en rama main)"
             }
         }
-
         stage('Verificación') {
             steps {
                 echo "Simulación de verificación del entorno"
@@ -57,6 +57,7 @@ pipeline {
 
     post {
         always {
+            sh 'docker compose down --remove-orphans || true'
             echo '✅ Pipeline completado'
         }
         failure {
