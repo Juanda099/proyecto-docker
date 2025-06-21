@@ -19,6 +19,18 @@ pipeline {
     stage('Run Tests with Coverage') {
         steps {
             script {
+            // Detener cualquier contenedor que esté usando el puerto 3311
+            sh '''
+                echo "🛠️ Verificando si el puerto 3311 está ocupado..."
+                container_id=$(docker ps -q --filter "publish=3311")
+                if [ -n "$container_id" ]; then
+                    echo "⚠️ Contenedor usando el puerto 3311 detectado: $container_id. Deteniendo..."
+                    docker stop $container_id || true
+                    docker rm $container_id || true
+                else
+                    echo "✅ Puerto 3311 libre"
+                fi
+            '''                
                 // Limpiar y construir
                 sh 'docker compose down --remove-orphans || true'
                 sh 'docker compose build --no-cache web'
