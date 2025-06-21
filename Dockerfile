@@ -6,13 +6,17 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-# Primero copiamos requirements e instalamos
+# Copiar primero los requirements desde la carpeta app/
 COPY app/requirements.txt .
 
+# Instalar dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Después copiamos toda la aplicación
-COPY . .
+# Luego copiar SOLO el contenido de app/ (no toda la raíz)
+COPY app/ .
 
-# Damos permisos de ejecución al script de espera
+# Copiar el script de espera que sí está en la raíz del proyecto
+COPY wait-for-db.sh .
+
+# Dar permisos de ejecución
 RUN chmod +x wait-for-db.sh
