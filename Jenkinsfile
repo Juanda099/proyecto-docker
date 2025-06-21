@@ -18,7 +18,7 @@ pipeline {
                 sh '''
                     docker compose down --remove-orphans || true
                     docker compose up -d db
-                    docker compose run --rm web pytest --cov=main --cov-report=html tests
+                    docker compose run --rm --entrypoint "" web pytest --cov=main --cov-report=html tests
                 '''
             }
         }
