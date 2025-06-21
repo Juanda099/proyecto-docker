@@ -17,9 +17,11 @@ pipeline {
             steps {
                 sh '''
                     docker compose down --remove-orphans || true
+                    docker compose build --no-cache web
                     docker compose up -d db
                     docker compose run --rm --entrypoint="" web pytest --cov=main --cov-report=html tests
                 '''
+
             }
         }
 
