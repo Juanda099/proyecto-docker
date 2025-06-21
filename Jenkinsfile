@@ -6,9 +6,13 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
-   // environment {
-   //     DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
-   // }
+    // environment {
+    //     DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+    // }
+
+    environment {
+        COVERAGE_DIR = 'htmlcov'
+    }
 
     stages {
         stage('Build') {
@@ -16,14 +20,16 @@ pipeline {
                 echo "Simulación del proceso de construcción"
             }
         }
+
         stage('Run Tests with Coverage') {
             steps {
                 dir('proyecto-docker') {
-                sh '''
-                    docker compose down --remove-orphans || true
-                    docker compose up -d db
-                    docker compose run --rm web pytest --cov=main --cov-report=html tests
-                '''
+                    sh '''
+                        docker compose down --remove-orphans || true
+                        docker compose up -d db
+                        docker compose run --rm web pytest --cov=main --cov-report=html tests
+                    '''
+                }
             }
         }
 
@@ -39,6 +45,7 @@ pipeline {
                 ])
             }
         }
+
         stage('Deploy') {
             when {
                 branch 'main'
@@ -47,6 +54,7 @@ pipeline {
                 echo "Simulación del despliegue (solo en rama main)"
             }
         }
+
         stage('Verificación') {
             steps {
                 echo "Simulación de verificación del entorno"
