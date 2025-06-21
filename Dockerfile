@@ -6,6 +6,9 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+# ✅ Establece PYTHONPATH para que Python pueda encontrar main.py
+ENV PYTHONPATH=/app
+
 # Copiar primero los requirements desde la carpeta app/
 COPY app/requirements.txt .
 
