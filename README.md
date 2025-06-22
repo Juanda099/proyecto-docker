@@ -6,6 +6,7 @@
 - **Brayan Salguero** 
 
 
+
 ## 🔹 Descripción general
 
 Este proyecto implementa una aplicación web desarrollada con **Flask** (Python) que interactúa con una base de datos **MySQL**. Todo el entorno se ejecuta en contenedores Docker, orquestados mediante **Docker Compose**, lo que facilita el desarrollo, pruebas, despliegue y la integración continua.
