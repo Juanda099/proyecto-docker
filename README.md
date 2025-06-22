@@ -1,6 +1,6 @@
 # 🐳 Proyecto Flask + MySQL con Docker
 
-## 🔹 Autores
+## 🔹 Autores:
 - **Juan David Ramírez Calderón**
 - **Fredy Rodríguez**
 - **Brayan Salguero**
