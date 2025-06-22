@@ -3,7 +3,7 @@
 ## 🔹 Autores:
 - **Juan David Ramírez Calderón**
 - **Fredy Rodríguez**
-- **Brayan Salguero**
+- **Brayan Salguero** 
 
 
 ## 🔹 Descripción general
